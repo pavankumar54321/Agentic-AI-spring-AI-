@@ -1,0 +1,22 @@
+server.port=8081
+spring.application.name=medical-agent-system
+spring.datasource.url=jdbc:mysql://localhost:3306/meddb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+
+# LangChain4j configuration for Gemini
+langchain4j.gemini.chat-model.api-key=YOUR_GEMINI_API_KEY
+langchain4j.gemini.chat-model.model-name=gemini-2.5-flash
+langchain4j.gemini.chat-model.max-retries=5
+
+# Logging
+logging.level.dev.langchain4j=DEBUG
+
+# Twilio Configuration
+twilio.account-sid=YOUR_TWILIO_ACCOUNT_SID
+twilio.auth-token=YOUR_TWILIO_AUTH_TOKEN
+twilio.from-number=YOUR_TWILIO_PHONE_NUMBER
