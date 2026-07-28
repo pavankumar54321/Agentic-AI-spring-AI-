@@ -1,6 +1,6 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
+import org.springframework.ai.tool.annotation.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class HospitalLocationAgent {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Tool("Finds the nearest hospital or medical center. Use this when an emergency is detected or the user asks for a hospital recommendation. Provide the user's city or location.")
+    @Tool(description = "Finds the nearest hospital or medical center. Use this when an emergency is detected or the user asks for a hospital recommendation. Provide the user's city or location.")
     public String findNearestHospital(String location) {
         log.info("Searching for hospitals near: {}", location);
         

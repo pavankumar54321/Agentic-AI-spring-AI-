@@ -1,7 +1,7 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.chat.client.ChatClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 public class EmergencyTriageAgent {
     private static final Logger log = LoggerFactory.getLogger(EmergencyTriageAgent.class);
     
-    private final ChatLanguageModel chatLanguageModel;
+    private final ChatClient chatClient;
 
-    public EmergencyTriageAgent(ChatLanguageModel chatLanguageModel) {
-        this.chatLanguageModel = chatLanguageModel;
+    public EmergencyTriageAgent(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    @Tool("Detects medical emergencies and estimates urgency. Call this tool immediately if symptoms are provided.")
+    @Tool(description = "Detects medical emergencies and estimates urgency. Call this tool immediately if symptoms are provided.")
     public String evaluateEmergencyRisk(String symptoms) {
         log.info("Evaluating emergency risk dynamically for symptoms: {}", symptoms);
         
@@ -41,7 +41,7 @@ public class EmergencyTriageAgent {
         Exception lastException = null;
         for (int i = 0; i < maxRetries; i++) {
             try {
-                return chatLanguageModel.generate(prompt);
+                return chatClient.prompt(prompt).call().content();
             } catch (Exception e) {
                 lastException = e;
                 if (e.getMessage() != null && (e.getMessage().contains("503") || e.getMessage().contains("429"))) {

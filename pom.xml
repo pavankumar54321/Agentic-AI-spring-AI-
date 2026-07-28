@@ -15,8 +15,20 @@
     <description>Autonomous Medical Emergency Multi-Agent System</description>
     <properties>
         <java.version>21</java.version>
-        <langchain4j.version>0.35.0</langchain4j.version>
+        <spring-ai.version>1.0.0-M6</spring-ai.version>
     </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,23 +66,17 @@
             <version>10.0.0</version>
         </dependency>
 
-        <!-- LangChain4j Core and Spring Boot Starter -->
+        <!-- Spring AI Core and OpenAI Starter (used for Gemini API compatibility) -->
         <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-spring-boot-starter</artifactId>
-            <version>${langchain4j.version}</version>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+            <version>${spring-ai.version}</version>
         </dependency>
-        <!-- LangChain4j Gemini integration -->
+        <!-- Spring AI Transformers (for local ONNX embeddings) -->
         <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-google-ai-gemini</artifactId>
-            <version>${langchain4j.version}</version>
-        </dependency>
-        <!-- Local Embedding Model for RAG -->
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-embeddings-all-minilm-l6-v2-q</artifactId>
-            <version>${langchain4j.version}</version>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-transformers-spring-boot-starter</artifactId>
+            <version>${spring-ai.version}</version>
         </dependency>
 
         <dependency>
@@ -88,4 +94,15 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

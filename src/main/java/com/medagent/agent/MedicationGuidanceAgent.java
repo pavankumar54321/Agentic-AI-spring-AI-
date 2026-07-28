@@ -1,6 +1,6 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
+import org.springframework.ai.tool.annotation.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class MedicationGuidanceAgent {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Tool("Provides guidance on medication usage, side effects, and precautions. Use this tool when a user asks about taking a specific non-prescription drug or wants to know side effects.")
+    @Tool(description = "Provides guidance on medication usage, side effects, and precautions. Use this tool when a user asks about taking a specific non-prescription drug or wants to know side effects.")
     public String getMedicationGuidance(String medicationName, String patientAllergies) {
         log.info("Providing guidance for medication: {}, Allergies: {}", medicationName, patientAllergies);
 

@@ -1,7 +1,7 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.chat.client.ChatClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 public class MentalHealthSupportAgent {
     private static final Logger log = LoggerFactory.getLogger(MentalHealthSupportAgent.class);
 
-    private final ChatLanguageModel chatLanguageModel;
+    private final ChatClient chatClient;
 
-    public MentalHealthSupportAgent(ChatLanguageModel chatLanguageModel) {
-        this.chatLanguageModel = chatLanguageModel;
+    public MentalHealthSupportAgent(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    @Tool("Detects emotional distress and provides calming support. Use this tool if the user indicates they are having a panic attack, feeling depressed, anxious, or overwhelmed.")
+    @Tool(description = "Detects emotional distress and provides calming support. Use this tool if the user indicates they are having a panic attack, feeling depressed, anxious, or overwhelmed.")
     public String provideMentalHealthSupport(String emotionalState) {
         log.info("Providing mental health support for state dynamically: {}", emotionalState);
 
@@ -40,7 +40,7 @@ public class MentalHealthSupportAgent {
         Exception lastException = null;
         for (int i = 0; i < maxRetries; i++) {
             try {
-                return chatLanguageModel.generate(prompt);
+                return chatClient.prompt(prompt).call().content();
             } catch (Exception e) {
                 lastException = e;
                 if (e.getMessage() != null && (e.getMessage().contains("503") || e.getMessage().contains("429"))) {

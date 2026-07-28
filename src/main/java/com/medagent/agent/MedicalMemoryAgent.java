@@ -2,7 +2,7 @@ package com.medagent.agent;
 
 import com.medagent.domain.PatientProfile;
 import com.medagent.repository.PatientProfileRepository;
-import dev.langchain4j.agent.tool.Tool;
+import org.springframework.ai.tool.annotation.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class MedicalMemoryAgent {
         this.repository = repository;
     }
 
-    @Tool("Retrieves a patient's medical history, chronic conditions, and allergies by their name. Use this tool when you need to check if a patient has any pre-existing conditions or allergies.")
+    @Tool(description = "Retrieves a patient's medical history, chronic conditions, and allergies by their name. Use this tool when you need to check if a patient has any pre-existing conditions or allergies.")
     public String getPatientHistory(String patientName) {
         log.info("Fetching history for patient: {}", patientName);
         Optional<PatientProfile> profile = repository.findByNameIgnoreCase(patientName);

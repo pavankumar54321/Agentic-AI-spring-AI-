@@ -1,7 +1,7 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.chat.client.ChatClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 public class PreventiveHealthcareAgent {
     private static final Logger log = LoggerFactory.getLogger(PreventiveHealthcareAgent.class);
 
-    private final ChatLanguageModel chatLanguageModel;
+    private final ChatClient chatClient;
 
-    public PreventiveHealthcareAgent(ChatLanguageModel chatLanguageModel) {
-        this.chatLanguageModel = chatLanguageModel;
+    public PreventiveHealthcareAgent(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    @Tool("Provides long-term wellness guidance, nutrition advice, and preventive strategies for chronic diseases. Use this tool when a user asks about diet, exercise, or preventing hereditary conditions.")
+    @Tool(description = "Provides long-term wellness guidance, nutrition advice, and preventive strategies for chronic diseases. Use this tool when a user asks about diet, exercise, or preventing hereditary conditions.")
     public String providePreventiveAdvice(String healthTopic) {
         log.info("Providing preventive healthcare advice dynamically for topic: {}", healthTopic);
 
@@ -40,7 +40,7 @@ public class PreventiveHealthcareAgent {
         Exception lastException = null;
         for (int i = 0; i < maxRetries; i++) {
             try {
-                return chatLanguageModel.generate(prompt);
+                return chatClient.prompt(prompt).call().content();
             } catch (Exception e) {
                 lastException = e;
                 if (e.getMessage() != null && (e.getMessage().contains("503") || e.getMessage().contains("429"))) {

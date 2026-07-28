@@ -1,6 +1,6 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
+import org.springframework.ai.tool.annotation.Tool;
 import com.medagent.domain.PatientProfile;
 import com.medagent.repository.PatientProfileRepository;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class NotificationAlertAgent {
         Twilio.init(accountSid, authToken);
     }
 
-    @Tool("Dispatches an emergency SOS alert to the user's parent/guardian. Use this tool ONLY when an emergency is CRITICAL. Do NOT ask the user for a phone number or name, the system automatically retrieves it from their secure profile.")
+    @Tool(description = "Dispatches an emergency SOS alert to the user's parent/guardian. Use this tool ONLY when an emergency is CRITICAL. Do NOT ask the user for a phone number or name, the system automatically retrieves it from their secure profile.")
     public String sendEmergencySOS(String location, String criticalCondition) {
         log.info("DISPATCHING SOS for Location {}, Condition {}", location, criticalCondition);
         

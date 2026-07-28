@@ -1,7 +1,7 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.chat.client.ChatClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 public class MultilingualTranslationAgent {
     private static final Logger log = LoggerFactory.getLogger(MultilingualTranslationAgent.class);
 
-    private final ChatLanguageModel chatLanguageModel;
+    private final ChatClient chatClient;
 
-    public MultilingualTranslationAgent(ChatLanguageModel chatLanguageModel) {
-        this.chatLanguageModel = chatLanguageModel;
+    public MultilingualTranslationAgent(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    @Tool("Translates text to a specific language with medical and cultural context. Use this tool if you need to actively translate medical terms or instructions into the user's requested language.")
+    @Tool(description = "Translates text to a specific language with medical and cultural context. Use this tool if you need to actively translate medical terms or instructions into the user's requested language.")
     public String translateText(String textToTranslate, String targetLanguage) {
         log.info("Translating text to {}: {}", targetLanguage, textToTranslate);
 
@@ -26,14 +26,14 @@ public class MultilingualTranslationAgent {
                 "Output ONLY the translated text in the native script.";
 
         try {
-            return chatLanguageModel.generate(prompt);
+            return chatClient.prompt(prompt).call().content();
         } catch (Exception e) {
             log.error("Failed to translate text", e);
             return "Translation Error. Please proceed in English or simple terminology.";
         }
     }
     
-    @Tool("Provides cultural context and confirms language formatting for translations. Call this tool to get rules before formatting the final 7-section response in a foreign language.")
+    @Tool(description = "Provides cultural context and confirms language formatting for translations. Call this tool to get rules before formatting the final 7-section response in a foreign language.")
     public String getTranslationGuidelines(String targetLanguage) {
         return "Translation Guidelines for " + targetLanguage + ":\n" +
                "1. Use simple, understandable terminology for low-literacy users.\n" +

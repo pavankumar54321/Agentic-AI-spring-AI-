@@ -1,5 +1,4 @@
 package com.medagent.agent;
-
 import com.medagent.domain.PatientProfile;
 import com.medagent.repository.PatientProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,27 +11,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 public class NotificationAlertAgentTest {
-
     @Mock
     private PatientProfileRepository patientProfileRepository;
-
     @Mock
     private SecurityContext securityContext;
-
     @Mock
     private Authentication authentication;
-
     @InjectMocks
     private NotificationAlertAgent notificationAlertAgent;
-
     @BeforeEach
     public void setup() {
         // Set mock properties that are usually injected by Spring

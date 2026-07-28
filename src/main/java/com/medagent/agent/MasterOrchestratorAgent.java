@@ -1,13 +1,53 @@
 package com.medagent.agent;
 
-import dev.langchain4j.service.SystemMessage;
-import dev.langchain4j.service.UserMessage;
-import dev.langchain4j.service.spring.AiService;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.stereotype.Service;
 
-@AiService
-public interface MasterOrchestratorAgent {
+@Service
+public class MasterOrchestratorAgent {
 
-    @SystemMessage("""
+    private final ChatClient chatClient;
+    private final EmergencyTriageAgent emergencyTriageAgent;
+    private final HospitalLocationAgent hospitalLocationAgent;
+    private final MedicalMemoryAgent medicalMemoryAgent;
+    private final MedicalReportAnalysisAgent medicalReportAnalysisAgent;
+    private final MedicationGuidanceAgent medicationGuidanceAgent;
+    private final MentalHealthSupportAgent mentalHealthSupportAgent;
+    private final MultilingualTranslationAgent multilingualTranslationAgent;
+    private final NotificationAlertAgent notificationAlertAgent;
+    private final PreventiveHealthcareAgent preventiveHealthcareAgent;
+    private final RagMedicalKnowledgeAgent ragMedicalKnowledgeAgent;
+    private final SymptomAnalysisAgent symptomAnalysisAgent;
+
+    public MasterOrchestratorAgent(
+            ChatClient chatClient,
+            EmergencyTriageAgent emergencyTriageAgent,
+            HospitalLocationAgent hospitalLocationAgent,
+            MedicalMemoryAgent medicalMemoryAgent,
+            MedicalReportAnalysisAgent medicalReportAnalysisAgent,
+            MedicationGuidanceAgent medicationGuidanceAgent,
+            MentalHealthSupportAgent mentalHealthSupportAgent,
+            MultilingualTranslationAgent multilingualTranslationAgent,
+            NotificationAlertAgent notificationAlertAgent,
+            PreventiveHealthcareAgent preventiveHealthcareAgent,
+            RagMedicalKnowledgeAgent ragMedicalKnowledgeAgent,
+            SymptomAnalysisAgent symptomAnalysisAgent) {
+        
+        this.chatClient = chatClient;
+        this.emergencyTriageAgent = emergencyTriageAgent;
+        this.hospitalLocationAgent = hospitalLocationAgent;
+        this.medicalMemoryAgent = medicalMemoryAgent;
+        this.medicalReportAnalysisAgent = medicalReportAnalysisAgent;
+        this.medicationGuidanceAgent = medicationGuidanceAgent;
+        this.mentalHealthSupportAgent = mentalHealthSupportAgent;
+        this.multilingualTranslationAgent = multilingualTranslationAgent;
+        this.notificationAlertAgent = notificationAlertAgent;
+        this.preventiveHealthcareAgent = preventiveHealthcareAgent;
+        this.ragMedicalKnowledgeAgent = ragMedicalKnowledgeAgent;
+        this.symptomAnalysisAgent = symptomAnalysisAgent;
+    }
+
+    private static final String SYSTEM_PROMPT = """
             You are the Master Orchestrator Agent of an Autonomous Medical Emergency Multi-Agent System.
             Your role is to coordinate specialized agents (Symptom Analysis, Emergency Triage, Medical Memory, etc.) to assist the user.
             
@@ -35,6 +75,26 @@ public interface MasterOrchestratorAgent {
             
             Do NOT answer directly without reasoning and using tools when appropriate.
             Be calm, professional, fast, structured, and empathetic.
-            """)
-    String processMedicalQuery(@UserMessage String query);
+            """;
+
+    public String processMedicalQuery(String query) {
+        return chatClient.prompt()
+                .system(SYSTEM_PROMPT)
+                .user(query)
+                .tools(
+                        emergencyTriageAgent,
+                        hospitalLocationAgent,
+                        medicalMemoryAgent,
+                        medicalReportAnalysisAgent,
+                        medicationGuidanceAgent,
+                        mentalHealthSupportAgent,
+                        multilingualTranslationAgent,
+                        notificationAlertAgent,
+                        preventiveHealthcareAgent,
+                        ragMedicalKnowledgeAgent,
+                        symptomAnalysisAgent
+                )
+                .call()
+                .content();
+    }
 }

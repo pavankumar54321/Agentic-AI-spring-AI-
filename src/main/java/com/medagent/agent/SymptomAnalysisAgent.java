@@ -1,7 +1,7 @@
 package com.medagent.agent;
 
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.chat.client.ChatClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 public class SymptomAnalysisAgent {
     private static final Logger log = LoggerFactory.getLogger(SymptomAnalysisAgent.class);
     
-    private final ChatLanguageModel chatLanguageModel;
+    private final ChatClient chatClient;
 
-    public SymptomAnalysisAgent(ChatLanguageModel chatLanguageModel) {
-        this.chatLanguageModel = chatLanguageModel;
+    public SymptomAnalysisAgent(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    @Tool("Extracts structured medical symptoms, severity, and duration from the user's raw description. Call this tool when you need to understand the patient's symptoms clearly.")
+    @Tool(description = "Extracts structured medical symptoms, severity, and duration from the user's raw description. Call this tool when you need to understand the patient's symptoms clearly.")
     public String analyzeSymptoms(String patientDescription) {
         log.info("Analyzing symptoms dynamically for: {}", patientDescription);
         
@@ -29,7 +29,7 @@ public class SymptomAnalysisAgent {
                 "Do not include conversational text, only the structured extraction.";
                 
         try {
-            return chatLanguageModel.generate(prompt);
+            return chatClient.prompt(prompt).call().content();
         } catch (Exception e) {
             log.error("Failed to extract symptoms", e);
             return "Symptom Analysis Complete (Fallback). Ensure you ask for Primary Symptoms, Severity, and Duration.";
